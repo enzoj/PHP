@@ -8,7 +8,7 @@ class SQL extends PDO
     {
         try
         {
-            $this->$_conn = new PDO(
+            $this->_conn = new PDO(
                 "sqlsrv:Database=dbphp7;
                 server=localhost\SQLEXPRESS;
                 ConnectionPooling=0", null, null

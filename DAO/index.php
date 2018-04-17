@@ -2,7 +2,10 @@
 
 require_once("config.php");
 
-$sql = new SQL();
+$sql = new SQL(
+"sqlsrv:Database=dbphp7;
+server=localhost\SQLEXPRESS;
+ConnectionPooling=0, null, null");
 
 $usuarios = $sql->select("SELECT * FROM tb_usuarios");
 
