@@ -64,6 +64,47 @@ class User {
         }
     }
 
+    public static function getList()
+    {
+        $sql = new SQL();
+        return  $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
+    }
+
+    public static function search($value)
+    {
+        $sql = new SQL();
+        return $sql->select(
+            "SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+            ':SEARCH'=>"%".$value."%"
+        ));
+    }
+
+    public function login($login, $senha)
+    {
+        $sql = new SQL;
+        
+        $resultado = $sql->select(
+            "SELECT * FROM tb_usuarios
+            WHERE deslogin = :LOGIN
+            AND dessenha = :SENHA",
+            array(
+                ":LOGIN" => $login,
+                ":SENHA"=> $senha)
+        );
+
+        if (isset($resultado[0])) {
+
+            $row = $resultado[0];
+
+            $this->setUserId($row['idusuario']);
+            $this->setLogin($row['deslogin']);
+            $this->setUserPass($row['dessenha']);
+            $this->setDataCad(new DateTime($row['dtcadastro']));
+        } else {
+            throw new Exception("Login e/ou senha inválidos.");
+        }
+    }
+
     public function __toString()
     {
         return json_encode(array(
@@ -71,7 +112,8 @@ class User {
             "deslogin"=>$this->getLogin(),
             "dessenha"=>$this->getUserPass(),
             "dtcadastro"=>$this->getDataCad()->format("d/m/Y H:i:s")
-        ));
+            )
+        );
     }
 
 }
