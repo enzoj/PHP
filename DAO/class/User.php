@@ -53,14 +53,9 @@ class User {
         
         $resultado = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID" => $id));
 
-        if (isset($resultado[0]))
-        {
-            $row = $resultado[0];
+        if (isset($resultado[0])) {
 
-            $this->setUserId($row['idusuario']);
-            $this->setLogin($row['deslogin']);
-            $this->setUserPass($row['dessenha']);
-            $this->setDataCad(new DateTime($row['dtcadastro']));
+            $this->setData($resultado[0]);
         }
     }
 
@@ -76,7 +71,8 @@ class User {
         return $sql->select(
             "SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
             ':SEARCH'=>"%".$value."%"
-        ));
+            )
+        );
     }
 
     public function login($login, $senha)
@@ -94,14 +90,37 @@ class User {
 
         if (isset($resultado[0])) {
 
-            $row = $resultado[0];
+            $this->setData($resultado[0]);
 
-            $this->setUserId($row['idusuario']);
-            $this->setLogin($row['deslogin']);
-            $this->setUserPass($row['dessenha']);
-            $this->setDataCad(new DateTime($row['dtcadastro']));
         } else {
+
             throw new Exception("Login e/ou senha inválidos.");
+        }
+    }
+
+    public function setData($data)
+    {
+        $this->setUserId($data['idusuario']);
+        $this->setLogin($data['deslogin']);
+        $this->setUserPass($data['dessenha']);
+        $this->setDataCad(new DateTime($data['dtcadastro']));
+    }
+
+    public function insert()
+    {
+        $sql = new SQL();
+        //$resultado = $sql->select("EXECUTE sp_usuarios_insert 'enzo', 'senha'");
+        $resultado = $sql->select("EXECUTE sp_usuarios_insert :LOGIN, :PASSWORD", array(
+            ":LOGIN"=>$this->getLogin(),
+            ":PASSWORD"=>$this->getUserPass()
+            )
+        );
+
+        if (count($resultado) > 0) {
+            $this->setData($resultado[0]);
+        }
+        else {
+            //throw new Exception("Ocorreu um erro ao tentar inserir os dados.");
         }
     }
 
@@ -111,11 +130,10 @@ class User {
             "idusuario"=>$this->getUserId(),
             "deslogin"=>$this->getLogin(),
             "dessenha"=>$this->getUserPass(),
-            "dtcadastro"=>$this->getDataCad()->format("d/m/Y H:i:s")
+            "dtcadastro"=>$this->getDataCad() //->format("d/m/Y H:i:s")
             )
         );
     }
-
 }
 
 ?>

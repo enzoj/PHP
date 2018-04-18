@@ -17,9 +17,19 @@ echo json_encode($lista);
 $search = User::search("en");
 echo json_encode($search);
 */
-
+ /*Retorna info do user after logged in
 $user = new User();
 $user->login("enzo", "senhafraca");
 echo $user;
+*/
+
+$aluno = new User();
+$aluno->setLogin("aluno");
+$aluno->setUserPass("@alun0");
+
+$aluno->insert();
+
+echo $aluno;
+
 
 ?>
