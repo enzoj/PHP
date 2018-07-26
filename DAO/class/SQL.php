@@ -18,7 +18,6 @@ class SQL extends PDO
         {
             throw new PDOException($e);
         }
-        
     }
 
     private function setParams($statement, $parameters = array())
@@ -47,5 +46,4 @@ class SQL extends PDO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
 ?>
