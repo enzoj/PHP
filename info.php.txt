@@ -1,0 +1,4 @@
+<?php
+info();
+//adição de chave ssh
+?>
